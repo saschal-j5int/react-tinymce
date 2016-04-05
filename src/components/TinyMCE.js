@@ -57,6 +57,8 @@ const TinyMCE = React.createClass({
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.config, nextProps.config)) {
       this._init(nextProps.config, nextProps.content);
+    } else if (!isEqual(this.props.content, nextProps.content)) {
+      this._updateContent(nextProps.content);
     }
     if (!isEqual(this.props.id, nextProps.id)) {
       this.id = nextProps.id;
@@ -124,6 +126,16 @@ const TinyMCE = React.createClass({
     findDOMNode(this).style.hidden = '';
 
     this._isInit = true;
+  },
+
+  _updateContent: function _updateContent(content) {
+    let editor = tinymce.EditorManager.get(this.id)
+    if (editor) {
+      const currentEditorContent = editor.getContent()
+      if (content && currentEditorContent != content) {
+        editor.setContent(content);
+      }
+    }
   },
 
   _remove() {
